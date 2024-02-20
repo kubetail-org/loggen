@@ -16,6 +16,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"math/rand"
 	"net"
@@ -24,6 +25,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/lthibault/jitterbug/v2"
 )
 
@@ -127,13 +129,20 @@ func incIP(ip net.IP) {
 	}
 }
 
-func randLogLine() string {
+func randLogLine(ansi bool) string {
 	dateStr := time.Now().UTC().Format("02/01/2006:15:04:05")
 	ip := pickRand(ips)
 	method := pickWeighted(methods)
 	endpoint := pickWeighted(endpoints[method])
 	httpCode := pickWeighted(httpCodes)
 	uaString := pickRand(userAgents)
+
+	if ansi {
+		method = color.YellowString(method)
+		endpoint = color.BlueString(endpoint)
+		httpCode = color.RedString(httpCode)
+		uaString = color.CyanString(uaString)
+	}
 
 	return fmt.Sprintf("%s - - [%s] \"%s %s HTTP/1.1\" %s 162 \"-\" \"%s\"",
 		ip,
@@ -146,6 +155,10 @@ func randLogLine() string {
 }
 
 func main() {
+	// cli options
+	ansiPtr := flag.Bool("ansi", false, "Use ANSI color-encoding in examples")
+	flag.Parse()
+
 	interval := 1 * time.Second
 	jitter := 1 * time.Second
 
@@ -169,7 +182,7 @@ Loop:
 		case <-ctx.Done():
 			break Loop
 		case <-ticker.C:
-			fmt.Println(randLogLine())
+			fmt.Println(randLogLine(*ansiPtr))
 		}
 	}
 
