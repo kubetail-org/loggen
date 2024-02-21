@@ -25,7 +25,6 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/fatih/color"
 	"github.com/lthibault/jitterbug/v2"
 )
 
@@ -138,10 +137,10 @@ func randLogLine(ansi bool) string {
 	uaString := pickRand(userAgents)
 
 	if ansi {
-		method = color.YellowString(method)
-		endpoint = color.BlueString(endpoint)
-		httpCode = color.RedString(httpCode)
-		uaString = color.CyanString(uaString)
+		method = "\x1b[33m" + method + "\x1b[0m"
+		endpoint = "\x1b[34m" + endpoint + "\x1b[0m"
+		httpCode = "\x1b[31m" + httpCode + "\x1b[0m"
+		uaString = "\x1b[36m" + uaString + "\x1b[0m"
 	}
 
 	return fmt.Sprintf("%s - - [%s] \"%s %s HTTP/1.1\" %s 162 \"-\" \"%s\"",
