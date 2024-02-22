@@ -130,7 +130,6 @@ func incIP(ip net.IP) {
 
 func randLogLine(ansi bool) string {
 	dateStr := time.Now().UTC().Format("02/01/2006:15:04:05")
-	prefix := ""
 	ip := pickRand(ips)
 	method := pickWeighted(methods)
 	endpoint := pickWeighted(endpoints[method])
@@ -138,16 +137,14 @@ func randLogLine(ansi bool) string {
 	uaString := pickRand(userAgents)
 
 	if ansi {
-		prefix = "\x1b[38;5;0008m[\x1b[0m\x1b[38;5;0007mansi\x1b[0m\x1b[38;5;0008m]\x1b[0m "
 		ip = "\x1b[38;5;0045m" + ip + "\x1b[0m"
 		method = "\x1b[33m" + method + "\x1b[0m"
-		endpoint = "\x1b[34m" + endpoint + "\x1b[0m"
+		endpoint = "\x1b[32m" + endpoint + "\x1b[0m"
 		httpCode = "\x1b[31m" + httpCode + "\x1b[0m"
 		uaString = "\x1b[36m" + uaString + "\x1b[0m"
 	}
 
-	return fmt.Sprintf("%s%s - - [%s] \"%s %s HTTP/1.1\" %s 162 \"-\" \"%s\"",
-		prefix,
+	return fmt.Sprintf("%s - - [%s] \"%s %s HTTP/1.1\" %s 162 \"-\" \"%s\"",
 		ip,
 		dateStr,
 		method,
