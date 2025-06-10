@@ -157,10 +157,10 @@ func randLogLine(ansi bool) string {
 func main() {
 	// cli options
 	ansiPtr := flag.Bool("ansi", false, "Use ANSI color-encoding in examples")
-	flag.Parse()
+	intervalPtr := flag.Duration("interval", 1*time.Second, "Time interval between log messages (e.g., 5s, 100ms, 2m)")
+	jitterPtr := flag.Duration("jitter", 1*time.Second, "Random jitter added to the logging interval (e.g., '500ms', '1s')")
 
-	interval := 1 * time.Second
-	jitter := 1 * time.Second
+	flag.Parse()
 
 	// initialize global ip list
 	ips = append(ips, IPsFromCIDR("123.25.44.0/28")...)
@@ -173,7 +173,7 @@ func main() {
 	defer stop()
 
 	// init timer with jitter
-	ticker := jitterbug.New(interval, &jitterbug.Norm{Stdev: jitter})
+	ticker := jitterbug.New(*intervalPtr, &jitterbug.Norm{Stdev: *jitterPtr})
 
 	// main loop
 Loop:
